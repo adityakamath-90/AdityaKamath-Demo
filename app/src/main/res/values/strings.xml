@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Portfolio Demo</string>
+    <string name="portfolio">Portfolio</string>
+    <string name="positions">POSITIONS</string>
+    <string name="holdings">HOLDINGS</string>
+    <string name="current_value">Current value</string>
+    <string name="total_investment">Total investment</string>
+    <string name="today_pnl">Today\'s PNL</string>
+    <string name="total_pnl">Total PNL</string>
+    <string name="ltp">LTP</string>
+    <string name="net_qty">NET QTY</string>
+    <string name="pnl">P&amp;L</string>
+    <string name="error_loading_data">Error loading portfolio data</string>
+    <string name="retry">Retry</string>
+    <string name="empty_holdings">No holdings found</string>
+    <string name="offline_mode">Offline mode - showing cached data</string>
+    
+    <!-- Portfolio Summary -->
+    <string name="profit_loss">Profit &amp; Loss*</string>
+    <string name="current_value_star">Current value*</string>
+    <string name="total_investment_star">Total investment*</string>
+    <string name="todays_pnl_star">Today\'s Profit &amp; Loss*</string>
+    
+    <!-- Holding Item -->
+    <string name="ltp_label">LTP: %1$s</string>
+    <string name="net_qty_label">NET QTY: %1$s</string>
+    <string name="pnl_label">P&amp;L: %1$s</string>
+    
+    <!-- Accessibility -->
+    <string name="account_icon_description">User account</string>
+    <string name="expand_summary">Expand portfolio summary</string>
+    <string name="collapse_summary">Collapse portfolio summary</string>
+    <string name="profit_indicator">Profit of %1$s</string>
+    <string name="loss_indicator">Loss of %1$s</string>
+</resources>
+

@@ -1,0 +1,21 @@
+package com.portfoliodemo.core.di
+
+import com.portfoliodemo.feature.portfolio.data.PortfolioRepositoryImpl
+import com.portfoliodemo.feature.portfolio.domain.PortfolioRepository
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class RepositoryModule {
+
+    @Binds
+    @Singleton
+    abstract fun bindPortfolioRepository(
+        portfolioRepositoryImpl: PortfolioRepositoryImpl
+    ): PortfolioRepository
+}
+
