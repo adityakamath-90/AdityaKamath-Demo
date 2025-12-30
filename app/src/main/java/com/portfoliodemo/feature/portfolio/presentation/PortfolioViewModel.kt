@@ -17,9 +17,9 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,19 +36,30 @@ class PortfolioViewModel @Inject constructor(
     private val _selectedTab = MutableStateFlow(PortfolioTab.HOLDINGS)
     val selectedTab: StateFlow<PortfolioTab> = _selectedTab.asStateFlow()
 
+    private val _refreshError = MutableStateFlow<String?>(null)
+    val refreshError: StateFlow<String?> = _refreshError.asStateFlow()
+
+    private var hasInitialRefresh = false
+
     val uiState: StateFlow<PortfolioUiState> = getPortfolioHoldingsUseCase()
+        .onStart {
+            if (!hasInitialRefresh) {
+                hasInitialRefresh = true
+                viewModelScope.launch {
+                    refreshPortfolio()
+                }
+            }
+        }
         .combine(_isSummaryExpanded) { holdings, isExpanded ->
             // Perform calculation on background thread for better performance
-            // This ensures UI thread remains responsive (120 FPS target)
+            // flowOn(defaultDispatcher) ensures this runs on background thread (120 FPS target)
             try {
-                withContext(defaultDispatcher) {
-                    val summary = calculatePortfolioSummaryUseCase(holdings)
-                    PortfolioUiState.Success(
-                        holdings = holdings,
-                        summary = summary,
-                        isSummaryExpanded = isExpanded
-                    )
-                }
+                val summary = calculatePortfolioSummaryUseCase(holdings)
+                PortfolioUiState.Success(
+                    holdings = holdings,
+                    summary = summary,
+                    isSummaryExpanded = isExpanded
+                )
             } catch (e: Exception) {
                 PortfolioUiState.Error(
                     e.message ?: "Error processing portfolio data"
@@ -80,26 +91,19 @@ class PortfolioViewModel @Inject constructor(
         )
 
     fun refreshPortfolio() {
-        // Use viewModelScope to ensure proper cancellation and prevent memory leaks
         viewModelScope.launch {
+            _refreshError.value = null
             val result = refreshPortfolioUseCase()
             if (result.isFailure) {
-                // If refresh fails and we have no cached data, show error
-                // Otherwise, cached data will be shown via the uiState flow
-                // This provides graceful error recovery
-                val currentState = uiState.value
-                if (currentState is PortfolioUiState.Success && currentState.holdings.isEmpty()) {
-                    // Note: Since uiState is now a StateFlow from stateIn, we can't directly set it
-                    // The error will be handled by the flow's catch operator if getPortfolioHoldingsUseCase fails
-                    // For refresh failures, we rely on the repository to handle gracefully
-                }
+                val errorMessage = result.exceptionOrNull()?.message 
+                    ?: "Failed to refresh portfolio data"
+                _refreshError.value = errorMessage
             }
         }
     }
 
     fun toggleSummaryExpanded() {
         _isSummaryExpanded.value = !_isSummaryExpanded.value
-        // State update is handled automatically by the combine flow
     }
 
     fun setSelectedTab(tab: PortfolioTab) {
