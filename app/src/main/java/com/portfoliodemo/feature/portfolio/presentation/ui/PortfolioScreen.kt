@@ -129,8 +129,6 @@ private fun PortfolioTabs(
 private fun PortfolioContent(
     uiState: PortfolioUiState,
     selectedTab: PortfolioViewModel.PortfolioTab,
-    isSummaryExpanded: Boolean,
-    onSummaryToggle: () -> Unit,
     onRetry: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -145,7 +143,7 @@ private fun PortfolioContent(
                 fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(200))
             },
             label = "content_transition"
-        ) { stateClass ->
+        ) { _ ->
             // Access current uiState to get latest data
             when (val state = uiState) {
                 is PortfolioUiState.Loading -> {
@@ -155,9 +153,13 @@ private fun PortfolioContent(
                     // This block persists as long as the state is 'Success'
                     // Only show HoldingsList when Holdings tab is selected
                     if (selectedTab == PortfolioViewModel.PortfolioTab.HOLDINGS) {
-                        HoldingsList(
-                            holdings = state.holdings
-                        )
+                        if (state.holdings.isEmpty()) {
+                            EmptyState()
+                        } else {
+                            HoldingsList(
+                                holdings = state.holdings
+                            )
+                        }
                     } else {
                         // Positions tab - show empty or placeholder (no-op)
                         Box(
@@ -217,8 +219,6 @@ fun PortfolioScreen(
             PortfolioContent(
                 uiState = uiState,
                 selectedTab = selectedTab,
-                isSummaryExpanded = isSummaryExpanded,
-                onSummaryToggle = { viewModel.toggleSummaryExpanded() },
                 onRetry = { viewModel.refreshPortfolio() },
                 modifier = Modifier.weight(1f)
             )

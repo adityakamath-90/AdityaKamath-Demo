@@ -134,17 +134,22 @@ class PortfolioViewModelTest {
 
         viewModel = createViewModel()
 
-        // Trigger flow
+        // Trigger flow - this will automatically trigger refresh on first subscription
         viewModel.uiState.first()
+        advanceUntilIdle()
         
-        // Verify refreshPortfolio is not called automatically (no init block)
-        verify(refreshPortfolioUseCase, org.mockito.kotlin.never()).invoke()
+        // Verify refreshPortfolio is called automatically on first subscription (not in init)
+        verify(refreshPortfolioUseCase, org.mockito.kotlin.atLeastOnce()).invoke()
+        
+        // Reset mock to count only explicit calls
+        org.mockito.kotlin.reset(refreshPortfolioUseCase)
+        whenever(refreshPortfolioUseCase()).thenReturn(Result.success(Unit))
         
         // Now call it explicitly
         viewModel.refreshPortfolio()
         advanceUntilIdle()
         
-        // Should be called once (explicit call only)
+        // Should be called once (explicit call)
         verify(refreshPortfolioUseCase, org.mockito.kotlin.times(1)).invoke()
     }
 

@@ -46,9 +46,13 @@ fun PortfolioDemoTheme(
         SideEffect {
             val window = (view.context as Activity).window
             WindowCompat.setDecorFitsSystemWindows(window, false)
-            window.statusBarColor = android.graphics.Color.TRANSPARENT
             val insetsController = WindowCompat.getInsetsController(window, view)
             insetsController.isAppearanceLightStatusBars = !darkTheme
+            // Set status bar color to transparent for edge-to-edge display
+            // Note: statusBarColor setter is deprecated in API 30+, but still needed for transparency
+            // There's no direct replacement - we use it here as edge-to-edge apps still need transparent status bar
+            @Suppress("DEPRECATION")
+            window.statusBarColor = android.graphics.Color.TRANSPARENT
         }
     }
 
