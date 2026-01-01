@@ -10,7 +10,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
@@ -24,7 +23,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.portfoliodemo.R
 import com.portfoliodemo.feature.portfolio.presentation.PortfolioViewModel
 import com.portfoliodemo.feature.portfolio.presentation.PortfolioUiState
@@ -186,9 +185,9 @@ private fun PortfolioContent(
 fun PortfolioScreen(
     viewModel: PortfolioViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-    val isSummaryExpanded by viewModel.isSummaryExpanded.collectAsState()
-    val selectedTab by viewModel.selectedTab.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isSummaryExpanded by viewModel.isSummaryExpanded.collectAsStateWithLifecycle()
+    val selectedTab by viewModel.selectedTab.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
