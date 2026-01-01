@@ -4,25 +4,28 @@ import com.portfoliodemo.core.network.NetworkConnectivityManager
 import com.portfoliodemo.feature.portfolio.data.local.PortfolioLocalDataSource
 import com.portfoliodemo.feature.portfolio.data.remote.PortfolioRemoteDataSource
 import com.portfoliodemo.feature.portfolio.domain.model.PortfolioItem
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import java.math.BigDecimal
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class PortfolioRepositoryImplTest {
 
     private lateinit var mockLocalDataSource: PortfolioLocalDataSource
     private lateinit var mockRemoteDataSource: PortfolioRemoteDataSource
     private lateinit var mockNetworkConnectivityManager: NetworkConnectivityManager
     private lateinit var repository: PortfolioRepositoryImpl
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     @Before
     fun setup() {
@@ -32,7 +35,8 @@ class PortfolioRepositoryImplTest {
         repository = PortfolioRepositoryImpl(
             remoteDataSource = mockRemoteDataSource,
             localDataSource = mockLocalDataSource,
-            networkConnectivityManager = mockNetworkConnectivityManager
+            networkConnectivityManager = mockNetworkConnectivityManager,
+            ioDispatcher = testDispatcher
         )
     }
 
