@@ -17,11 +17,6 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -134,16 +129,6 @@ private fun PortfolioContent(
     Box(
         modifier = modifier
     ) {
-        // Use uiState::class as targetState to prevent re-animation on data updates
-        // Animation only triggers when switching between Loading, Success, and Error states
-        AnimatedContent(
-            targetState = uiState::class,
-            transitionSpec = {
-                fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(200))
-            },
-            label = "content_transition"
-        ) { _ ->
-            // Access current uiState to get latest data
             when (val state = uiState) {
                 is PortfolioUiState.Loading -> {
                     LoadingIndicator()
@@ -177,7 +162,6 @@ private fun PortfolioContent(
                 }
             }
         }
-    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
