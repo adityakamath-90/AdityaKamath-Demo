@@ -3,7 +3,6 @@ package com.portfoliodemo.feature.portfolio.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.portfoliodemo.core.di.DefaultDispatcher
-import com.portfoliodemo.feature.portfolio.domain.model.PortfolioItem
 import com.portfoliodemo.feature.portfolio.domain.usecase.CalculatePortfolioSummaryUseCase
 import com.portfoliodemo.feature.portfolio.domain.usecase.GetPortfolioHoldingsUseCase
 import com.portfoliodemo.feature.portfolio.domain.usecase.RefreshPortfolioUseCase
@@ -115,4 +114,3 @@ class PortfolioViewModel @Inject constructor(
         HOLDINGS
     }
 }
-
